@@ -1,4 +1,4 @@
-#+STARTUP: overview hideblocks indent entitiespretty: 
+#+STARTUP: overview hideblocks indent entitiespretty:
 * Week 0 - Overview and Problem Solving
 
 - [ ] Introduce [[https://open.kattis.com][open.kattis.com]]
@@ -70,7 +70,7 @@ Use any language you like. I've done this in C++ and in Python 3.
      etc.)
 
    - It's the site that the Arkansas competitions seem to use.
-     
+
    - The main weakness is that there may be too many "simple" problems.
 
 2) Use pen and paper.
@@ -112,7 +112,7 @@ Use any language you like. I've done this in C++ and in Python 3.
 
    - You have probably killed fewer trees than if you had used a
      computer.
-  
+
 6) Put program in editor and test it on the sample input/output.
 
    - You can pick different development environments.
@@ -136,20 +136,23 @@ Use any language you like. I've done this in C++ and in Python 3.
 
 10) I show you my "literate" solution.
 
-   - For what it's worth. Emacs + Org-mode.
+    - For what it's worth. Emacs + Org-mode.
 
-* Ovissa
 
-    #+begin_src C++ :main no :includes :results none
-      // Gets a single line of input and prints the number of 'u' characters
-      #include <iostream>
-      using namespace std;
+** Telja - Solution
 
-      int main()
-      {
-        string input;
-        getline(cin, input);
-        cout << input.size() << endl;
-        return 0;
-      }
-    #+end_src
+
+** Ovissa - Solution
+
+#+begin_src C++ :main no :includes :results none
+  // Gets a single line of input and prints the number of 'u' characters
+  #include <iostream>
+
+  int main()
+  {
+    std::string input;
+    getline(std::cin, input);
+    std::cout << input.size() << std::endl;
+    return 0;
+  }
+#+end_src

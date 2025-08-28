@@ -1,0 +1,184 @@
+#+STARTUP: overview hideblocks indent entitiespretty: 
+* Problem 1.1 - [[https://open.kattis.com/problems/ovissa][Ovissa (uncertainty)]]
+#+OPTIONS: toc:nil num:nil ^:nil: 
+
+1. *Objectives:* ~string~ library and letting go of my original design
+   completely. Strong reliance on cppreference.com for documentation.
+
+2. *Problem restatement:* Write a C++ program that takes a string of =u=
+   characters from the keyboard and prints the number of characters =n=.
+
+3. Constraint: n in [1,5] (Group 1), or n in [1,100000] (Group 2) - no
+   code is required to check these constraints.
+
+4. Sample input/output:
+
+   | Input          | Output |
+   |----------------+--------|
+   | uuuuu          |      5 |
+   | uuuuuuuuuuuuuu |     14 |
+
+5. Approach: This problem includes a conversion of character input to
+   integer output. The conversion is explicit through counting the
+   number of characters. The program can get the characters in a
+   ~do-while~ loop that's over as soon as an empty character (~\0~) is
+   entered.
+
+6. I'm going to do this as pseudocode first, then I'll test the I/O,
+   then I'll write the full program.
+
+7. Pseudocode
+   #+begin_example
+   SET u counter to 0
+   DO
+       GET input
+       if input == 'u'
+          counter++
+   WHILE input
+   PRINT counter
+   #+end_example
+
+8. I/O test program =io.cpp= (test on shell):
+   #+begin_src C++ :tangle ../src/io.cpp :main yes :includes <iostream> :namespaces std :results none
+     // gets and prints character input in a loop
+     // the loop ends when there is no more input
+     char input;
+     do
+       {
+         cin >> input;
+         cout << "-->" << input << endl;
+       } while (input != '\0');
+   #+end_src
+
+9. =io.cpp= takes input and prints it but it does not terminate when an
+   empty character ~'\0'~ is entered. Let's try =getline(cin,input)= for
+   =io2.cpp= ([[https://en.cppreference.com/w/cpp/string/basic_string/getline][cppref]]):
+   #+begin_src C++ :tangle ../src/io2.cpp :main yes :includes <iostream> <string> :namespaces std :results none
+     // gets and prints character input in a loop
+     // the loop ends when there is no more input
+     char input;
+     do
+       {
+         getline(cin, input);
+         cout << "-->" << input << endl;
+       } while (input);
+   #+end_src
+
+10. I cannot even get this to compile: The =input= argument needs to be a
+    ~string~! Version 3, =io3.cpp=:
+    #+begin_src C++ :tangle ../src/io3.cpp :main yes :includes <iostream> <string> :namespaces std :results none
+      // gets and prints character input in a loop
+      // the loop ends when there is no more input
+      string input;
+      do
+        {
+          getline(cin, input);
+          cout << "-->" << input << endl;
+        } while (input);
+    #+end_src
+
+11. Another compilation error: Now the termination condition
+    =while(input)= does not work because ~string~ cannot be converted
+    automatically to ~bool~! I am learning a lot from this silly problem!
+
+12. Checking cppref for the [[https://cppreference.com/w/c/language/do.html][do-while loop]]. The ~while~ expression needs to
+    be a scalar, but =input= is a ~string~ (therefore an array).
+
+13. Modifying the expression to: ~input != '\0'~ in =io4.cpp=:
+    #+begin_src C++ :tangle ../src/io4.cpp :main yes :includes <iostream> <string> :namespaces std :results none
+      // gets and prints character input in a loop
+      // the loop ends when there is no more input
+      string input;
+      do
+        {
+          getline(cin, input);
+          cout << "-->" << input << endl;
+        } while (!input.empty());
+    #+end_src
+
+14. Okay, now this works alright and it satisfies the rules because the
+    input must "consist of a single line", like "uuuuu". Let's add the
+    counter, =ovissa=.
+
+15. This causes another problem - we need to *count* the number of =u=
+    characters in the input. We assume only the sample input from the
+    tests. Let's try the ~string::size()~ function.
+
+    But also, we no longer need the ~do-while~ loop or the counter
+    variable =ovissa= since all the heavy lifting is done by
+    ~std::basic_string~ functions.
+
+    I tried to change the type of =input= to ~const string~ but that does
+    not work since =input= is being built from the keyboard input
+    stream, I suppose.
+
+    #+begin_src C++ :tangle ../src/io5.cpp :main yes :includes <iostream> <string> :namespaces std :results none
+      // Gets a single line of input and prints the number of 'u' characters
+      string input;
+      getline(cin, input);
+      cout << input.size() << endl;
+    #+end_src
+
+16. Works - I'm going to submit (after adding the wrapper):
+    #+begin_src C++ :main no :includes :results none
+      // Gets a single line of input and prints the number of 'u' characters
+      #include <iostream>
+      using namespace std;
+
+      int main()
+      {
+        string input;
+        getline(cin, input);
+        cout << input.size() << endl;
+        return 0;
+      }
+    #+end_src
+
+17. Here's another solution, with ~.size()~
+    #+begin_src C++ :tangle ../src/io6.cpp :main no :includes :results none
+      // Gets a single line of input and prints the number of 'u' characters
+      #include <iostream>
+      #include <string>
+      using namespace std;
+
+      int main()
+      {
+        string input;
+        cin >> input;
+        cout << input.size() << endl;
+        return 0;
+      }
+    #+end_src
+
+18. In fact, ~cin~ achieves the same thing here as ~getline~ but it's
+    simpler and suffices because we don't anticipate any other
+    characters than u's, and no whitespaces. ~getline~ is safer (it
+    says).
+
+19. Discuss the relative merits of ~std::cin~ (an instance of the
+    ~istream~ class, which see whitespace as a delimiter) vs
+    ~std::getline~ (a member function of the ~string~ class - meant for
+    multi-word input). ~cin~ can also lead to an input buffer overflow
+    (and a consequential security vulnerability). ~getline~ has an
+    optional parameter to cap input length and prevent overflow).
+
+    Source: [[https://expertbeacon.com/getline-in-c-an-in-depth-guide-to-cin-getline/][expertbeacon.com (08/2024)]]
+
+    | Feature                      | std::cin >> var   | std::getline(cin,var)  |
+    |------------------------------+-------------------+------------------------|
+    | Reads up to whitespace       | Yes               | No (reads entire line) |
+    | Multi-word strings           | No                | Yes                    |
+    | Handles leading whitespace   | Skips it          | Preserves it           |
+    | Stops reading at:            | First whitespace  | Newline (`\n`)         |
+    | Use case                     | Single word/token | Full-line input        |
+    | Reads newline character?     | No                | Yes (and discards it)  |
+    | Risk of leaving \n in buffer | No                | No                     |
+    | Simplicity for token input   | Simpler           | Slightly more overhead |
+
+** Ovissa in Python
+
+#+begin_src python :tangle ../src/ovissa.py
+  s = input().strip()
+  uncertainty_level = s.count('u')
+  print(uncertainty_level)
+#+end_src
