@@ -5,7 +5,6 @@
 - [ ] Solve and submit [[https://open.kattis.com/problems/hello][hello world problem]]
 - [ ] Issues of competitive programming
 
-
 * Week 1 - Warming up with counting ("Telja")
 
 - [ ] Review week 0
@@ -20,8 +19,8 @@
    #+end_quote
 2. What does "problem solving" mean to a [competitive] programmer?
    #+begin_quote
-   Writing an original program that performs a set of tasks meeting
-   all the stated constraints.
+   Writing an *original* program that performs a set of tasks meeting
+   all the stated *constraints*.
    #+end_quote
 3. Which two issues are at the heart of all constraints?
    #+begin_quote
@@ -138,3 +137,19 @@ Use any language you like. I've done this in C++ and in Python 3.
 10) I show you my "literate" solution.
 
    - For what it's worth. Emacs + Org-mode.
+
+* Ovissa
+
+    #+begin_src C++ :main no :includes :results none
+      // Gets a single line of input and prints the number of 'u' characters
+      #include <iostream>
+      using namespace std;
+
+      int main()
+      {
+        string input;
+        getline(cin, input);
+        cout << input.size() << endl;
+        return 0;
+      }
+    #+end_src
