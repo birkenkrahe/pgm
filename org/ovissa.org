@@ -120,47 +120,55 @@
     #+end_src
 
 16. Works - I'm going to submit (after adding the wrapper):
-    #+begin_src C++ :main no :includes :results none :tangle ../src/ovissa.cpp
+    #+begin_src C++ :main no :includes :results none :tangle ../src/ovissa1.cpp
       // Gets a single line of input and prints the number of 'u' characters
       #include <iostream>
-      using namespace std;
 
       int main()
       {
-        string input;
-        getline(cin, input);
-        cout << input.size() << endl;
+        std::string input;
+        getline(std::cin, input);
+        std::cout << input.size() << '\n';
         return 0;
       }
     #+end_src
 
+    Test:
     #+begin_src bash :results output :exports both
       cd ../src
-      make ovissa
-      echo "uuuuu" | ./ovissa
-      echo "uuuuuuuuuuuuuu" | ./ovissa      
+      make ovissa1
+      echo "uuuuu" | ./ovissa1
+      echo "uuuuuuuuuuuuuu" | ./ovissa1
     #+end_src
 
     #+RESULTS:
-    : make: 'ovissa' is up to date.
-    : 5
-    : 14
+    : g++     ovissa1.cpp   -o ovissa1
 
 17. Here's another solution, with ~.size()~
-    #+begin_src C++ :tangle ../src/io6.cpp :main no :includes :results none
+    #+begin_src C++ :tangle ../src/ovissa2.cpp :main no :includes :results none
       // Gets a single line of input and prints the number of 'u' characters
       #include <iostream>
-      #include <string>
-      using namespace std;
 
       int main()
       {
-        string input;
-        cin >> input;
-        cout << input.size() << endl;
+        std::string input;
+        std::cin >> input;
+        std::cout << input.size() << '\n';
         return 0;
       }
     #+end_src
+
+    Test:
+    #+begin_src bash :results output :exports both
+      cd ../src
+      make ovissa2
+      echo "uuuuu" | ./ovissa2
+      echo "uuuuuuuuuuuuuu" | ./ovissa2
+    #+end_src
+
+    #+RESULTS:
+    : g++     ovissa2.cpp   -o ovissa2
+    : 514
 
 18. In fact, ~cin~ achieves the same thing here as ~getline~ but it's
     simpler and suffices because we don't anticipate any other
