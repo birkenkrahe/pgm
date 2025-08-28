@@ -1,0 +1,140 @@
+#+STARTUP: overview hideblocks indent entitiespretty: 
+* Week 0 - Overview and Problem Solving
+
+- [ ] Introduce [[https://open.kattis.com][open.kattis.com]]
+- [ ] Solve and submit [[https://open.kattis.com/problems/hello][hello world problem]]
+- [ ] Issues of competitive programming
+
+
+* Week 1 - Warming up with counting ("Telja")
+
+- [ ] Review week 0
+- [ ] Program of the week
+- [ ] Post-mortem
+
+** Review Week 0
+
+1. What's the main challenge of competitive programming?
+   #+begin_quote
+   Managing problem constraints (requirements).
+   #+end_quote
+2. What does "problem solving" mean to a [competitive] programmer?
+   #+begin_quote
+   Writing an original program that performs a set of tasks meeting
+   all the stated constraints.
+   #+end_quote
+3. Which two issues are at the heart of all constraints?
+   #+begin_quote
+   - Time complexity (how long does the program take)
+   - Space complexity (how much memory does the program need)
+   #+end_quote
+4. What's a "Kobayashi Maru" solution?
+   #+begin_quote
+   It's a solution that violates the constraints by cheating (bending
+   the rules). It's a good start to solving a problem though.
+   #+end_quote
+5. How many problem solving process steps can you name?
+   #+begin_quote
+   |   | STEP                      | EXAMPLE                |
+   |---+---------------------------+------------------------|
+   | 1 | Always have a plan        | Pseudocode             |
+   | 2 | Restate the problem       | Use your own words     |
+   | 3 | Divide problem into steps | Input/Output/Decisions |
+   | 4 | Start with what you know  | Simplest way first     |
+   | 5 | Reduce the problem        | Separate tasks later   |
+   | 6 | Look for analogies        |                        |
+   | 7 | Experiment                |                        |
+   | 8 | Don't get frustrated      |                        |
+   #+end_quote
+
+** Program of the week: Telja
+
+Use any language you like. I've done this in C++ and in Python 3.
+
+1) Go to [[https://open.kattis.com/problems/telja][open.kattis.com/problems/telja]]
+2) Use pen and paper.
+3) Restate the problem in your own words.
+4) Write pseudocode first.
+5) Write the program out on paper.
+6) Put program in editor and test it on the sample input/output.
+7) If program runs, submit to open.kattis.com.
+8) Summarize what you learnt (if anything).
+9) Let's discuss the experience.
+10) I show you my "literate" solution.
+
+** Rationale
+
+1) Go to [[https://open.kattis.com/problems/telja][open.kattis.com/problems/telja]]
+
+   - This platform seems to work well and it is not tied to any
+     secondary causes (international competitions, job interviews
+     etc.)
+
+   - It's the site that the Arkansas competitions seem to use.
+     
+   - The main weakness is that there may be too many "simple" problems.
+
+2) Use pen and paper.
+
+   - This will show you what you really know.
+
+   - What speaks against it is that your muscles have memory that you
+     lose when writing by hand.
+
+   - In my experience, a lot of time is lost dabbling and groping
+     around in the dark when you start editing in the computer right
+     away. This works best when you already know the solution and are
+     just trying to remember it.
+
+3) Restate the problem in your own words.
+
+   - Crucial step to check your understanding of the problem.
+
+   - You will find that you missed things or added things just
+     because.
+
+   - You have to abstract away unnecessary detail (just like in real
+     life).
+
+4) Write pseudocode first.
+
+   - You can reuse pseudocode for comments.
+
+   - You're building a bridge to the code but you can still change
+     programming language.
+
+   - Best way to experiment with different data types.
+
+5) Write the program out on paper.
+
+   - Commit. Don't use pencil and eraser.
+
+   - Your paper version will show you "version history" for free.
+
+   - You have probably killed fewer trees than if you had used a
+     computer.
+  
+6) Put program in editor and test it on the sample input/output.
+
+   - You can pick different development environments.
+
+   - You should not write straight into open.kattis.com because it
+     does not compile but compile and run test cases.
+
+   - This is useful if you already have a working program.
+
+7) If program runs, submit to open.kattis.com.
+
+   - This will run a bunch of test cases
+
+8) Summarize what you learnt (if anything).
+
+   - Probe your mind for things you noticed along the way.
+
+9) Let's discuss the experience.
+
+   - Be competitive but not too competitive.
+
+10) I show you my "literate" solution.
+
+   - For what it's worth. Emacs + Org-mode.
