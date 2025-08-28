@@ -120,7 +120,7 @@
     #+end_src
 
 16. Works - I'm going to submit (after adding the wrapper):
-    #+begin_src C++ :main no :includes :results none
+    #+begin_src C++ :main no :includes :results none :tangle ../src/ovissa.cpp
       // Gets a single line of input and prints the number of 'u' characters
       #include <iostream>
       using namespace std;
@@ -133,6 +133,18 @@
         return 0;
       }
     #+end_src
+
+    #+begin_src bash :results output :exports both
+      cd ../src
+      make ovissa
+      echo "uuuuu" | ./ovissa
+      echo "uuuuuuuuuuuuuu" | ./ovissa      
+    #+end_src
+
+    #+RESULTS:
+    : make: 'ovissa' is up to date.
+    : 5
+    : 14
 
 17. Here's another solution, with ~.size()~
     #+begin_src C++ :tangle ../src/io6.cpp :main no :includes :results none
@@ -177,8 +189,20 @@
 
 ** Ovissa in Python
 
+Code:
 #+begin_src python :tangle ../src/ovissa.py
   s = input().strip()
   uncertainty_level = s.count('u')
   print(uncertainty_level)
 #+end_src
+
+Test:
+#+begin_src bash :results output :exports both
+  cd ../src
+  echo "uuuuu" | python3 ovissa.py
+  echo "uuuuuuuuuuuuuu" | python3 ovissa.py      
+#+end_src
+
+#+RESULTS:
+: 5
+: 14
