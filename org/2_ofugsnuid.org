@@ -1,0 +1,156 @@
+#+startup: overview hideblocks indent entitiespretty:
+* [[https://open.kattis.com/problems/ofugsnuid][Ofugsnuid (reversed)]]
+
+- *Problem*: Reverse a list of =n= integers. The number =n= and each of the
+  integers of the list are entered each on their own line.
+
+- *Constraints:* Four groups for different ranges of =n=:
+  1. n = 1
+  2. n \in [1,5]
+  3. n \in [1,1000]
+  4. n \in [1,20000]
+
+- *Sample Input/Output:*
+  #+begin_example
+   Input  Output |  Input Output
+       5       5 |      3      9
+       1       4 |     10     12
+       2       3 |     12     10
+       3       2 |      9
+       4       1 |
+       5         |
+  #+end_example
+
+- Approach:
+  1) Use an *dynamically allocated* array =num= of ~size~ =n=.
+  2) Step through the array in reverse index order.
+
+- Alternative:
+  1) Use a ~vector~ of ~size~ =n=.
+  2) Define a reverse iterator for the print loop.
+
+- Here, the pointer notation is actually quite natural since the array
+  was defined as a pointer!
+
+  #+begin_src C++ :tangle ../src/ofugsnuid.cpp :main yes :includes <iostream> :namespaces std :results none
+    int n;
+    cin >> n; // user input: length of list
+    cout << "n = " << n << endl;
+
+    int *arr = new int[n]; // new array of n elements
+    for (int i=0; i<n; i++)
+      {
+        cin >> *(arr + i); // store integer list in arr
+        cout << *(arr + i) << " ";
+      }
+    cout << endl;
+    for (int i=n-1; i>=0; i--)
+      {
+        cout << arr[i] << " ";  // print integers in reverse
+      }
+    delete [] arr;
+    arr = nullptr;
+  #+end_src
+
+- Testing with sample I/O:
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ ofugsnuid.cpp -o rev
+    echo "3 10 12 9" | ./rev
+    echo
+    echo "5 1 2 3 4 5" | ./rev
+  #+end_src
+
+  #+RESULTS:
+  : n = 3
+  : 10 12 9
+  : 9 12 10
+  : n = 5
+  : 1 2 3 4 5
+  : 5 4 3 2 1
+
+- Submission: OK
+  #+name: https://open.kattis.com/submissions/17759691
+  #+begin_src C++ :tangle ../src/ofugsnuid2.cpp :main yes :includes <iostream> :namespaces std :results none
+    int n;
+    cin >> n; // user input: length of list
+
+    int *arr = new int[n]; // new array of n elements
+    for (int i=0; i<n; i++)
+      cin >> *(arr + i); // store integer list in arr
+    cout << endl;
+    for (int i=n-1; i>=0; i--)
+      cout << arr[i] << " ";  // print integers in reverse
+    delete [] arr;
+    arr = nullptr;
+  #+end_src
+
+- Testing:
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ ofugsnuid2.cpp -o rev
+    echo "3 10 12 9" | ./rev
+    echo
+    echo "5 1 2 3 4 5" | ./rev
+  #+end_src
+
+  #+RESULTS:
+  :
+  : 9 12 10
+  :
+  : 5 4 3 2 1
+
+** Making it faster with decoupled streams
+
+- Solution:
+  #+begin_src C++ :tangle ofugsnuidai.cpp :main no :includes :results output :exports both
+    #include <bits/stdc++.h>
+    using namespace std;
+
+    int main() {
+      ios::sync_with_stdio(false); // decouple cin and cout
+      cin.tie(nullptr); // cin doesnt't have to wait for cout to flush
+
+      int n;
+      if (!(cin >> n)) return 0;
+      vector<int> a(n);  // dynamically allocated array = vector
+      for (int i = 0; i < n; ++i) cin >> a[i]; // fill the vector
+      for (int i = n - 1; i >= 0; --i) {       // print in reverse
+        cout << a[i] << '\n';
+      }
+      return 0;
+    }
+  #+end_src
+
+- Comparison to the first solution:
+  | Aspect            | First Solution                        | Improved Solution                     |
+  |-------------------+---------------------------------------+---------------------------------------|
+  | Data structure    | Raw array with ~new[]~ / ~delete[]~       | ~std::vector~ (automatic memory mgmt)   |
+  | Input method      | Pointer arithmetic: ~*(arr+i)~          | Indexing: ~a[i]~                        |
+  | Output format     | Numbers in reverse, space-separated   | Numbers in reverse, line-separated    |
+  | Kattis acceptance | Accepted (spaces allowed)             | Accepted (matches sample exactly)     |
+  | Memory management | Manual: ~delete[] arr~                  | Automatic                             |
+  | Safety            | Risk of leaks/errors if not careful   | Safer, no explicit cleanup needed     |
+  | Pedagogical value | Shows pointers, dynamic allocation    | Shows modern, idiomatic C++           |
+  | Suitability       | Great for teaching low-level concepts | Great for quick, robust problem solve |
+
+- Which solution is better (at a competition)?
+  #+begin_quote
+  Use ~std::vector~ for contests. Fewer ways to fail under time
+  pressure. Cleaner to read and review.
+  #+end_quote
+
+- Contest tips:
+  #+begin_quote
+  Turn on fast I/O. Drop this in at the top of ~main~:
+  =ios::sync_with_stdio(false); cin.tie(nullptr);= for data-heavy
+  problems.
+
+  1) The =ios= decouples C++ streams (~cin~ and ~cout~) from C streams
+     (~scanf~, ~printf~). The calls don't need to coordinate anymore.
+
+  2) =cin.tie(nullptr)= prevents unnecessary flushes: Every time you do
+     ~cin~, it first flushes ~cout~. Now ~cin~ doesn't have to wait anymore.
+
+  3) Avoid =endl= (it flushes), use ='\n'= instead.
+  #+end_quote
