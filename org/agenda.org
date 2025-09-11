@@ -156,7 +156,6 @@ Use any language you like. I've done this in C++ and in Python 3.
 #+end_src
 
 * Week 2 - Building towards mastery with reversal ("Ofugsnuid").
-
 ** Review: Takeaways
 
 Do you remember anything worth remembering from our last meeting?
@@ -176,4 +175,19 @@ will present my computational conflagrations.
 
 Next week: More reversal!
 
+* Week 3 - More reversal using ~algorithms~: [[https://open.kattis.com/problems/vidsnuningur]["Vidsnuningur"]]
 
+** Discussion: From Code to Concept?
+
+- We could have some fun with this.
+
+- Ideas:
+  1) Improve some terrible code.
+  2) Interpret some complicated code.
+  3) Read/comment each other's code.
+  4) Reverse engineer a mystery function.
+
+** Problem of the week: [[https://open.kattis.com/problems/vidsnuningur][Vidsnuningur]] (reversal)
+
+- Problem posted in Canvas for your screenshot.
+- My literate solution posted in GitHub.
