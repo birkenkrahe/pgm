@@ -176,6 +176,8 @@ will present my computational conflagrations.
 Next week: More reversal!
 
 * Week 3 - More reversal using ~algorithms~: [[https://open.kattis.com/problems/vidsnuningur]["Vidsnuningur"]]
+#+attr_html: :width 300px :float nil:
+[[../img/vidsnuningur.png]]
 
 ** Discussion: From Code to Concept?
 
