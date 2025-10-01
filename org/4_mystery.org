@@ -1,0 +1,191 @@
+#+TITLE: Mystery Code
+#+AUTHOR: Marcus Birkenkrahe (pledged)
+#+SUBTITLE: Programming seminar (CSC 450), Lyon College, Fall 2025
+#+STARTUP: overview hideblocks indent entitiespretty: 
+* Mystery code (from code to concept)
+
+** Solve the mystery
+
+- The =mystery= code:
+  #+name: mystery
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    void mystery(int arr[], int n) {
+      int left = 0;
+      int right = n - 1;
+      int swaps = (n % 2 == 0) ? (n / 2) : ((n - 1) / 2);
+
+      for (int count = 0; count < swaps; count++) {
+        int temp = 0;
+        temp += arr[left];
+        temp -= 0;
+        arr[left] = arr[right] + 0;
+        arr[right] = temp * 1;
+        left = left + 1;
+        right = right - 1;
+      }
+    }
+  #+end_src
+
+  #+RESULTS: mystery
+
+- What does this function do?
+  #+begin_quote
+  The function reverses the array in place: After the call, =arr[i]=
+  becomes the original =arr[n-1-i]= for all valid =i=.
+  #+end_quote
+  #+begin_src C++ :main no :includes :results output :exports both :noweb yes
+    #include <iostream>
+    using namespace std;
+
+    <<mystery>>
+
+    int main()
+    {
+      int a[5] {100, 200, 300, 400, 500};
+      for (int element : a) cout << element << " ";
+      mystery(a,5); cout << endl;
+      for (int element : a) cout << element << " ";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 100 200 300 400 500 
+  : 500 400 300 200 100 
+
+- Which lines are doing the real work?
+  #+begin_example C++
+    void mystery(int arr[], int n) {
+      int left = 0;
+      int right = n - 1;
+      int swaps = (n % 2 == 0) ? (n / 2) : ((n - 1) / 2);
+
+      for (int count = 0; count < swaps; count++) {
+        int temp = 0;
+
+        // copy left element into temp
+        temp += arr[left];
+        temp -= 0;   // pointless operation
+
+        // overwrite left element with right
+        arr[left] = arr[right] + 0;  // unnecessary +0
+
+        // overwrite right element with temp
+        arr[right] = temp * 1;  // unnecessary *1
+
+        // adjust indices in a roundabout way
+        left = left + 1;
+        right = right - 1;
+      }
+    }
+  #+end_example
+
+- Can you rewrite this in a shorter, clearer way?
+
+- What would be a better function name?
+
+- Show your solutions first! How did you approach this?
+
+- What did you learn?
+
+** Sample solution
+#+attr_html: :width 400px :float nil:
+[[../img/mystery.jpg]]
+
+- Sample solution:
+  #+name: reverseArray
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    // reverse integer array of n elements in place
+    void reverseArray(int arr[], int n) {
+      int left = 0;
+      int right = n - 1;
+
+      while (left < right)
+        {
+          int temp = arr[left];
+          arr[left] = arr[right];
+          arr[right] = temp;
+          left++;
+          right--;
+      }
+    }
+  #+end_src
+
+  Testing:
+  #+begin_src C++ :main no :includes :results output :exports both :noweb yes
+    #include <iostream>
+    using namespace std;
+
+    <<reverseArray>>
+
+    int main()
+    {
+      int a[5] {100, 200, 300, 400, 500};
+      for (int element : a) cout << element << " ";
+      reverseArray(a,5); cout << endl;
+      for (int element : a) cout << element << " ";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 100 200 300 400 500 
+  : 500 400 300 200 100 
+
+- Why ~while~ and not ~for~?
+  + ~for~ is slightly tighter: loop initialization, condition, and
+    updates are all in one line.
+  + ~for~ avoids the need for separate variable declarations before the loop.
+  + ~for~ is much harder to read (personal view).
+  + ~while~ emphasizes logic (clarity of condition).
+  + ~for~ emphasizes compact loop control.
+
+- Code example:    
+  #+name: reverseArray2
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    // reverse integer array of n elements in place
+    void reverseArray2(int arr[], int n) {
+      for (int left=0,right=n-1; // start
+           left < right;         // stop
+           left++, right--)      // in/decrement
+        {
+          int temp = arr[left];
+          arr[left] = arr[right];
+          arr[right] = temp;
+        }
+    }
+  #+end_src
+
+  Testing:
+  #+begin_src C++ :main no :includes :results output :exports both :noweb yes
+    #include <iostream>
+    using namespace std;
+
+    <<reverseArray2>>
+
+    int main()
+    {
+      int a[5] {100, 200, 300, 400, 500};
+      for (int element : a) cout << element << " ";
+      reverseArray2(a,5); cout << endl;
+      for (int element : a) cout << element << " ";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 100 200 300 400 500 
+  : 500 400 300 200 100 
+
+- What did I learn?
+
+  1) Needed to work through mystery code away from the code.
+
+  2) Worth considering alternatives for loops and conditions.
+
+  3) Think past arrays for performance optimization.
+
+  4) Motivates me to check for more "mystery code" elsewhere.
+
+  5) How to design unnecessarily confused and complicated code.
+
