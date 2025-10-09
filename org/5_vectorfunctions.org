@@ -1,0 +1,458 @@
+* Medium problem 3.1 - Vector Functions (Week 5 + 6)
+
+** Problem
+
+- Your task is to implement the following C++ functions:
+  #+begin_example C++
+  #include "vectorfunctions.h"
+
+  // Reverse a vector.
+  // Note that it is sent as a reference, so you should
+  // reverse the same vector that was sent in.
+  void backwards(vector<int>& vec){
+
+  }
+
+  // Return every other element of the vector, starting with the first.
+  // You should return a new vector with the answer.
+  // You are not allowed to modify the vector, even though it is
+  // sent as a reference. Therefore, the parameter is declared "const".
+  vector<int> everyOther(const vector<int>& vec){
+          ...
+  }
+
+  // Return the smallest value of a vector.
+  int smallest(const vector<int>& vec){
+          ...
+  }
+
+  // Return the sum of the elements in the vector.
+  int sum(const vector<int>& vec){
+    ...
+  }
+
+  // Return the number of odd integers, that are also on an
+  // odd index (with the first index being 0).
+  int veryOdd(const vector<int>& vec){
+    ...
+  }
+  #+end_example
+
+- The vectors sent has between 1 and 100,000 elements. Each number in
+  the vector is between -2000 and 2000.
+
+- Template: You can download the above template as the file
+  [[https://open.kattis.com/problems/vectorfunctions/file/statement/attachments/vectorfunctions.cpp][vectorfunctions.cpp]] in the Attachments menu. When submitting your
+  solution, send in only this file.
+
+- Testing: To test your program, you can download the file
+  [[https://open.kattis.com/problems/vectorfunctions/file/statement/attachments/vectorfunctions.h][vectorfunctions.h]] in the menu to the left, which contains examples
+  that test your code. Place it in the same folder as your program
+  when compiling.
+
+** Solution
+
+*** Interface
+
+- The problem set asks for implementation of several functions that
+  have one argument, an integer ~vector~ passed as a reference (~&~):
+  1) The argument vector is reversed.
+  2) Every other element of the ~const~ vector is returned.
+  3) The minimum element of the ~const~ vector is returned.
+  4) The sum of the ~const~ vector elements is returned.
+  5) The number of odd elements of the ~const~ vector that are also on
+     an odd index is returned.
+
+- To test the functions, a header file =vectorfunctions.h= is included
+  in the =.cpp= file. For submission, this file contains the ~main~
+  function but a better solution is to have three files:
+  1. =vf.h= (for ~#include~ and function prototypes)
+  2. =vf.cpp= (for function definitions)
+  3. =main.cpp= (for testing)
+
+- Include a header guard in =vf.h=:
+  #+begin_src C++
+    #ifndef VF_H
+    #define VF_H
+    // ...
+    #endif
+  #+end_src
+
+- I'm going to write one function at a time as a noweb chunk, and
+  tangle the chunks together later.
+
+*** Implementation: =vf.cpp=
+
+1) Header file:
+
+   #+name: include header files
+   #+begin_src C++
+     #ifndef VF_H
+     #define VF_H
+     #include <iostream>
+     #include <vector>
+     #include <algorithm>
+     #endif
+   #+end_src
+
+2) =backwards= is a ~void~ function. To reverse the parameter ~vector~ in
+   place (as a reference of the ~vector~ in the calling function).
+
+   - Plan: include ~<algorithm>~ and use the ~reverse~ function with the
+     built-in iterators =vec.begin()= and =vec.end()=.
+
+   - Function implementation:
+     #+name: backwards: reverse vector
+     #+begin_src C++ :main no :includes
+       // Reverse a vector.
+       // Note that it is sent as a reference, so you should
+       // reverse the same vector that was sent in.
+       void backwards(std::vector<int>& vec) // must be std::vector!
+       {
+         std::reverse(vec.begin(), vec.end());
+       }
+     #+end_src
+
+     #+RESULTS: backwards: reverse vector
+
+3) =everyOther= takes a constant vector reference and returns a
+   vector. Plan:
+   1. Define a =temp= vector.
+   2. Iterate over the argument vector.
+   3. Build =temp= from the iterator =*it= using ~push_back~.
+   4. Return =temp=.
+
+   Simply restrict the output data stream to every second
+   element, using a range-based loop and an iterator that increments
+   in twos: =it+=2=.
+
+   - Function implementation: v1 (run-time error see below)
+     #+begin_src C++ :noweb yes :main no :includes :noeval
+       // Return every other element of the vector, starting with the first.
+       // You should return a new vector with the answer.
+       // You are not allowed to modify the vector, even though it is
+       // sent as a reference. Therefore, the parameter is declared "const".
+       std::vector<int> everyOther(const std::vector<int>& vec)
+       {
+         std::vector<int> temp;
+         std::vector<int>::iterator it;
+         for(auto it=vec.begin();it!=vec.end();it+=2)
+           temp.push_back(*it);
+         return temp;
+       }
+     #+end_src
+
+   - v2: safeguard the incrementing of the iterator
+     1) use ~cbegin()~ and ~cend()~, a ~const_iterator~ since =vec= is constant.
+     2) By using =it < vec.cend()= I make sure that the iterator never
+        steps out of bounds.
+
+     #+name: everyOther: return every other element
+     #+begin_src C++ :noweb yes :main no :includes :noeval
+       // Return every other element of the vector, starting with the first.
+       // You should return a new vector with the answer.
+       // You are not allowed to modify the vector, even though it is
+       // sent as a reference. Therefore, the parameter is declared "const".
+       std::vector<int> everyOther(const std::vector<int>& vec)
+       {
+         std::vector<int> temp;
+         std::vector<int>::iterator it;
+         for(auto it = vec.cbegin();it < vec.cend();it+=2)
+           temp.push_back(*it);
+         return temp;
+       }
+     #+end_src
+
+
+4) =smallest= takes a constant vector reference and returns an
+   integer.
+
+   - Plan:
+     1. Define iterator
+     2. Inside function, set =min= to =*vec.begin()=
+     3. Range-based iterator loop over =vec= comparing =min= with each
+        element and replacing it if element is smaller.
+     4. Return final =min=.
+
+   - Need to test this first with a small function:
+     #+begin_src C++ :main no :includes <iostream> <vector> :results output
+       // Return first vector element
+       int first(const std::vector<int>& vec)
+       {
+         int min = *vec.begin();
+         return min;
+       }
+       int main()
+       {
+         std::vector<int> test = {1, 2, 5, 3, 2, 5};
+         std::cout << first(test);
+         return 0;
+       }
+     #+end_src
+
+     #+RESULTS:
+     : 1
+
+   - Function implementation:
+     #+name: smallest: return smallest value
+     #+begin_src C++ :noeval :main yes :includes
+       // Return the smallest value of a vector.
+       int smallest(const std::vector<int>& vec)
+       {
+         int min = *vec.begin();
+         std::vector<int>::iterator it;
+         for (auto it=vec.begin(); it!=vec.end();it++)
+           if(*it<min) min=*it;
+         return min;
+       }
+     #+end_src
+
+5) =sum= takes a constant vector reference and returns an
+   integer.
+
+   - Plan:
+     1. Set =sum= to zero.
+     2. Define iterator.
+     3. Loop over vector and sum up its elements =*it=.
+
+   - Function implementation
+     #+name: sum: return sum of elements
+     #+begin_src C++ :noeval :main yes :includes
+       // Return the sum of the vector elements
+       int sum(const std::vector<int>& vec)
+       {
+         int sum=0;
+         std::vector<int>::iterator it;
+         for (auto it=vec.begin(); it!=vec.end();it++)
+           sum+=*it;
+         return sum;
+       }
+     #+end_src
+
+6) =veryOdd= takes a constant vector reference and returns the number of
+   odd integers that are also on an odd index (with the first odd
+   index being =1=, since =0 % 2 == 0= or even).
+
+   - Plan:
+     1) Loop over the vector using a subscript loop (using ~.size()~)
+     2) For each element, check if both the index and the element is
+        odd: ~(i % 2 !== 0) && (vec[i] % 2 != 0)~
+     3) Return the counter of these elements.
+
+   - Function implementation:
+     #+name: veryOdd: return number of odd integers on an odd index
+     #+begin_src C++ :noeval :main yes :includes
+       // Return the number of odd integers, that are also on an
+       // odd index (with the first index being 0).
+       int veryOdd(const std::vector<int>& vec)
+       {
+         int counter = 0;
+         for (int i = 0; i < vec.size(); i++)
+           if ( (i % 2 != 0) && (vec[i] % 2 != 0)) counter++;
+         return counter;
+       }
+     #+end_src
+
+*** Testing: =main.cpp=
+
+- The ~main~ program with the tests from =vectorfunctions.h=:
+
+  #+begin_src C++ :main no :includes :noweb yes :tangle ../src/main.cpp :noeval
+    <<include header files>>
+    <<backwards: reverse vector>>
+    <<everyOther: return every other element>>
+    <<smallest: return smallest value>>
+    <<sum: return sum of elements>>
+    <<veryOdd: return number of odd integers on an odd index>>
+
+    int main()
+      {
+        std::vector<int> test = {1, 2, 5, 3, 2, 5};
+        std::vector<int> expected = {5, 2, 3, 5, 2, 1};
+
+        // backwards: reverse vector in place
+        backwards(test); // changes `test` vector in place
+        if (test != expected) {
+          std::cerr << "backwards() was incorrect" << std::endl;
+          exit(1);
+        }
+
+        // everyOther: return every other element
+        test = {1, 2, 5, 3, 2, 5};
+        expected = {1, 5, 2};
+        std::vector<int> got = everyOther(test);
+        if (got != expected) {
+          std::cerr << "everyOther() was incorrect" << std::endl;
+          exit(1);
+        }
+
+        // smallest: return smallest value
+        test = {1, 2, 5, 3, 2, 5};
+        int ans = smallest(test);
+        if (ans != 1) {
+          std::cerr << "smallest() was incorrect" << std::endl;
+          exit(1);
+        }
+
+        // sum: return sum of elements
+        test = {1, 2, 5, 3, 2, 5};
+        ans = sum(test);
+        if (ans != 1+2+5+3+2+5) {
+          std::cerr << "sum() was incorrect" << std::endl;
+          exit(1);
+        }
+
+        // veryOdd: return number of odd integers on an odd index
+        test = {1, 2, 5, 3, 2, 5};
+        ans = veryOdd(test);
+        if (ans != 2) {
+          std::cerr << "veryOdd() was incorrect" << std::endl;
+          exit(1);
+        }
+        // all tests passed
+        std::cerr << "OK!" << std::endl;
+
+        return 0;
+      }
+  #+end_src
+
+- Testing on the command-line: No output means tests passed.
+  #+begin_src bash :results output :exports both
+    cd ../src
+    make main
+    ./main
+  #+end_src
+
+  #+RESULTS:
+  : g++     main.cpp   -o main
+
+*** TODO Submission to open.kattis.com
+
+- Files and Makefile: I'm instructed to only submit
+  =vectorfunctions.cpp= using the template. The included file
+  =vectorfunctions.h= takes care of the rest: it contains the ~#include~
+  files as well as the prototypes and the ~main~ program with the tests.
+
+- For Emacs Org-mode, add =:flags -I ../src/= which is where the header
+  file is located. I call the tangled file =vectorfunctions2.cpp= to
+  preserve the template.
+
+- Copying the ~noweb~ chunks to get the function definitions. So now the
+  tangled file looks like this:
+  1) included header files
+  2) function prototypes
+  3) main function with tests
+  4) function definitions.
+
+- Didn't need a makefile after all.
+
+- Final implementation of =vectorfunctions2.cpp= for submission:
+  #+begin_src C++ :results none :noweb yes :flags -I "../src/" :includes :main no :tangle ../src/vectorfunctions2.cpp
+    #include "vectorfunctions.h"
+    <<backwards: reverse vector>>
+    <<everyOther: return every other element>>
+    <<smallest: return smallest value>>
+    <<sum: return sum of elements>>
+    <<veryOdd: return number of odd integers on an odd index>>
+  #+end_src
+
+- Notice that the output "OK!" is written to ~cerr~ and not to ~cout~.
+
+- Submission test:
+  1) v1 failed with compile-time error (see below) - include ~<algorithm>~
+  2) v2 failed with run-time error (see below) - out of bounds iterator
+  3) v3 succeeded: https://open.kattis.com/submissions/18380989
+
+  #+begin_example C++
+  #include "vectorfunctions.h"
+  #include <algorithm>
+  // Reverse a vector.
+  // Note that it is sent as a reference, so you should
+  // reverse the same vector that was sent in.
+  void backwards(std::vector<int>& vec) // must be std::vector!
+  {
+    std::reverse(vec.begin(), vec.end());
+  }
+  // Return every other element of the vector, starting with the first.
+  // You should return a new vector with the answer.
+  // You are not allowed to modify the vector, even though it is
+  // sent as a reference. Therefore, the parameter is declared "const".
+  std::vector<int> everyOther(const std::vector<int>& vec)
+  {
+    std::vector<int> temp;
+    std::vector<int>::iterator it;
+    for(auto it = vec.cbegin();it < vec.cend();it+=2)
+      temp.push_back(*it);
+    return temp;
+  }
+  // Return the smallest value of a vector.
+  int smallest(const std::vector<int>& vec)
+  {
+    int min = *vec.begin();
+    std::vector<int>::iterator it;
+    for (auto it=vec.begin(); it!=vec.end();it++)
+      if(*it<min) min=*it;
+    return min;
+  }
+  // Return the sum of the vector elements
+  int sum(const std::vector<int>& vec)
+  {
+    int sum=0;
+    std::vector<int>::iterator it;
+    for (auto it=vec.begin(); it!=vec.end();it++)
+      sum+=*it;
+    return sum;
+  }
+  // Return the number of odd integers, that are also on an
+  // odd index (with the first index being 0).
+  int veryOdd(const std::vector<int>& vec)
+  {
+    int counter = 0;
+    for (int i = 0; i < vec.size(); i++)
+      if ( (i % 2 != 0) && (vec[i] % 2 != 0)) counter++;
+    return counter;
+  }
+  #+end_example
+
+*** Extensions and explanations
+
+**** Errors
+
+- Note: Weird error message.
+  #+begin_example
+  main.cpp:6:6: error: variable or field ‘backwards’ declared void
+      6 | void backwards(vector<int>& vec)
+        |      ^~~~~~~~~
+  main.cpp:6:16: error: ‘vector’ was not declared in this scope
+      6 | void backwards(vector<int>& vec)
+        |                ^~~~~~
+  #+end_example
+
+  Explanation: I had forgotten to =std::= to the =vector= parameter in the
+  =backwards= definition!
+
+- First submission failed:
+  #+begin_example
+  /src/vectorfunctions.cpp: In function ‘void backwards(std::vector<int>&)’:
+  /src/vectorfunctions.cpp:7:8: error: ‘reverse’ is not a member of ‘std’
+      7 |   std::reverse(vec.begin(), vec.end());
+        |        ^~~~~~~
+  Exited with error status 1
+  #+end_example
+
+  Not sure I understand that since ~reverse~ is in the ~std~ namespace
+  according to the definition in cppreference.com (from
+  ~<algorithm>~. And why would it work for me and not on kattis?
+
+- In any case, adding ~#include <algorithm~ at the head of the file does
+  the trick. But now I get a runtime error. This is due to =everyOther=:
+  The increment =it+=2= is dangerous and needs to be checked because
+  =vec.end()= points actually beyond the end of the vector. Build in a
+  safe guard.
+
+**** Extensions
+
+- Before working with ~reverse~ in =backwards=, I had written this function:
+
+- The question: What if I don't have ~reverse~, how can I save the
+  reversed vector and return it?
