@@ -326,7 +326,7 @@
   #+RESULTS:
   : g++     main.cpp   -o main
 
-*** TODO Submission to open.kattis.com
+*** Submission to open.kattis.com
 
 - Files and Makefile: I'm instructed to only submit
   =vectorfunctions.cpp= using the template. The included file
