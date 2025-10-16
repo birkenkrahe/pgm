@@ -1,11 +1,11 @@
 #+STARTUP: overview hideblocks indent entitiespretty:
-* Week 0 - Overview and Problem Solving
+* 0 - Overview and Problem Solving
 
 - [ ] Introduce [[https://open.kattis.com][open.kattis.com]]
 - [ ] Solve and submit [[https://open.kattis.com/problems/hello][hello world problem]]
 - [ ] Issues of competitive programming
 
-* Week 1 - Warming up with counting ("Telja", "Ovissa")
+* 1 - Warming up with counting ("Telja", "Ovissa")
 
 - [X] Review week 0
 - [X] Program of the week
@@ -138,7 +138,34 @@ Use any language you like. I've done this in C++ and in Python 3.
 
     - For what it's worth. Emacs + Org-mode.
 
-** Telja - Solution
+** Telja - Solution in C
+
+Code:
+#+begin_src C++ :tangle ../src/telja.c :results output :exports both :main no :includes
+  #include <stdio.h>
+  int main(void)
+  {
+    int n;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++)
+      printf("%d\n",(i+1));
+    return 0;
+  }
+#+end_src
+
+Test:
+#+begin_src bash :results output :exports both
+  cd ../src
+  gcc telja.c -o telja
+  echo "5" | ./telja
+#+end_src
+
+#+RESULTS:
+: 1
+: 2
+: 3
+: 4
+: 5
 
 ** Ovissa - Solution
 
@@ -155,7 +182,7 @@ Use any language you like. I've done this in C++ and in Python 3.
   }
 #+end_src
 
-* Week 2 - Building towards mastery with reversal ("Ofugsnuid").
+* 2 - Building towards mastery with reversal ("Ofugsnuid").
 ** Review: Takeaways
 
 Do you remember anything worth remembering from our last meeting?
@@ -175,7 +202,7 @@ will present my computational conflagrations.
 
 Next week: More reversal!
 
-* Week 3 - More reversal using ~algorithms~: [[https://open.kattis.com/problems/vidsnuningur]["Vidsnuningur"]]
+* 3 - More reversal using ~algorithms~: [[https://open.kattis.com/problems/vidsnuningur]["Vidsnuningur"]]
 #+attr_html: :width 400px :float nil:
 [[../img/vidsnuningur.png]]
 
@@ -198,8 +225,7 @@ Next week: More reversal!
 - [X] Problem posted in Canvas for your screenshot.
 - [X] My literate solution posted in GitHub.
 
-
-* Week 4 - Mystery code (from code to concept)
+* 4 - Mystery code (from code to concept)
 #+attr_html: :width 400px :float nil:
 [[../img/mystery.png]]
 
@@ -225,6 +251,8 @@ Next week: More reversal!
     }
   #+end_src
 
+  #+RESULTS: mystery
+
 - What does this function do?
   #+begin_quote
   The function reverses the array in place: After the call, =arr[i]=
@@ -245,6 +273,10 @@ Next week: More reversal!
       return 0;
     }
   #+end_src
+
+  #+RESULTS:
+  : 100 200 300 400 500 
+  : 500 400 300 200 100 
 
 - Which lines are doing the real work?
   #+begin_example C++
@@ -300,7 +332,7 @@ Next week: More reversal!
           arr[right] = temp;
           left++;
           right--;
-      }
+        }
     }
   #+end_src
 
@@ -338,9 +370,9 @@ Next week: More reversal!
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
     // reverse integer array of n elements in place
     void reverseArray2(int arr[], int n) {
-      for (int left=0,right=n-1;
-           left < right;
-           left++, right--)
+      for (int left=0,right=n-1; // start
+           left < right;         // stop
+           left++, right--)      // in/decrement
         {
           int temp = arr[left];
           arr[left] = arr[right];
@@ -376,17 +408,11 @@ Next week: More reversal!
 
   2) Worth considering alternatives for loops and conditions.
 
-  3) Motivates me to check for more "mystery code" elsewhere.
+  3) Think past arrays for performance optimization.
 
-* Challenge: Pythagoras day
+  4) Motivates me to check for more "mystery code" elsewhere.
 
- Can you prove this computationally by writing a program?
- 
- #+attr_html: :width 400px:
- [[../img/pythagorean.png]]
+  5) How to design unnecessarily confused and complicated code.
 
-** Claim
-
-There is only one set of numbers a,b,c where the sum of the squares of
-a and b equals the square of c if a \in [1,12], b \in [1,31], c \in [1,100].
-
+* 5 - [[https://open.kattis.com/problems/vectorfunctions][Vector functions]] (~vector~ class)
+* 6 - [[https://open.kattis.com/problems/averagecharacter][Average character]] (~string~ class)
