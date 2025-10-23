@@ -416,10 +416,9 @@ Next week: More reversal!
 
 * 5 - [[https://open.kattis.com/problems/vectorfunctions][Vector functions]] (~vector~ class)
 * 6 - [[https://open.kattis.com/problems/averagecharacter][Average character]] (~string~ class)
-* 7 - Pointer to object and ~string~ stream
-#+OPTIONS: toc:nil num:nil ^:nil: 
+* 7 - Mystery code II (Pointer to object and ~string~ stream)
 
-- New mystery file: tinyurl.com/player-cpp
+- New mystery file: [[https://tinyurl.com/player-cpp][tinyurl.com/player-cpp]]
 
 - Introduces printing to a ~string~ stream (a form of
   overloading/polymorphism, for safe buffering).
@@ -432,7 +431,7 @@ Next week: More reversal!
   2) Check if you need all functions, especially global ones.
   3) Remove the string stream and print the data as a normal string.
 
-** Explanation of ~<sstream>~ and ~ostringstream~
+** The ~<sstream>~ header and the ~ostringstream~ class
 
 The header ~<sstream>~ provides classes that let you read from and write
 to strings as if they were input/output streams (like ~cin~ and ~cout~).
@@ -459,21 +458,6 @@ Example:
 #+RESULTS:
 : Score: 42, Lives: 3
 
-** Explanation of =Player= reference and ~this~ pointer
-
-- Code fragment from the class review:
-  #+begin_example C++
-   Player& fire(int rounds) { // returns reference to same Player object
-     ammo -= rounds;          // ammo is private Player data
-     if (ammo < 0) ammo = 0;
-     return *this;            // returns value of current Player object
-   }
-  #+end_example
-
-- When member functions are defined in this way, they can be
-  chain-called: =p.fire(10).reload(5).move(1,0)=. Each method works on
-  ~this~ same object =p= without creating a copy.
-
 ** The ~this~ Pointer
 
 Every non-static member function in C++ has an implicit pointer named
@@ -485,39 +469,36 @@ Every non-static member function in C++ has an implicit pointer named
 - When returning ~*this~, you return the object itself by reference,
   enabling method chaining.
 
-- Example:
-  #+begin_src C++ :results output
-    #include <iostream>
-    using namespace std;
-
+- Simple but fully functional example:
+  #+begin_src C++ :results output :includes <iostream> :namespaces std
     class Counter {
     private:
       int value;
     public:
       Counter(int v) : value(v) {}
-
       Counter& add(int n) {
         value += n;
         return *this;   // return reference to this object
       }
-
       Counter& sub(int n) {
         value -= n;
         return *this;
       }
-
-      void show() const {
-        cout << "Value = " << value << endl;
-      }
+      void show() const {cout << "Value = " << value << endl;}
     };
 
     int main() {
       Counter c(10);
+      c.show();                 // prints: Value = 10
       c.add(5).sub(3).add(2);  // chain-calling works via `this`
       c.show();                 // prints: Value = 14
     }
   #+end_src
 
-- Here, ~this~ is a pointer to the object =c=. When =add()= and =sub()= return
-  ~*this~, they return the same object, allowing the chain
-  =c.add(5).sub(3).add(2)=.
+  #+RESULTS:
+  : Value = 10
+  : Value = 14
+
+- Here, ~this~ is a pointer to the object =c=. When =add()= and
+  =sub()= return ~*this~, they return the same object, allowing the
+  chain =c.add(5).sub(3).add(2)=.

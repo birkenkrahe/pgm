@@ -157,3 +157,12 @@ The changes:
 #+RESULTS:
 : Daniels HP=100 Ammo=30 Pos=(0,0)
 : Daniels HP=85 Ammo=35 Pos=(1,0)
+
+* What did I learn?
+
+- Returning a class object as a reference allows you to chain methods.
+- The ~this~ pointer lets you refer to the object you're currently
+  working on. It is most useful when returning the object after a
+  method call.
+- Using ~osstringstream~ objects from the ~<sstream>~ library allows you
+  to save output in a buffer and write it to a string.
