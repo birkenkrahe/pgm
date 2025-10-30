@@ -1,3 +1,6 @@
+#+TITLE: Destructors in C++
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 450 Programming Seminar Lyon College Fall 2025
 #+STARTUP: overview hideblocks indent entitiespretty:
 #+OPTIONS: toc:nil num:nil ^:nil:
 * What a destructor actually does (Matthew's question)
