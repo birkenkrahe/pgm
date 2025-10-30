@@ -1,0 +1,67 @@
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil:
+* What a destructor actually does (Matthew's question)
+
+The =Logger= class writes to =file=. The constructor opens a file. The
+=write= function writes its =msg= to the file. The destructor =~Logger= only
+closes the file.
+
+#+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+  #include <iostream>
+  #include <fstream>
+  using namespace std;
+
+  class Logger {
+    ofstream file;
+
+  public:
+    Logger(const string& filename) {
+      file.open(filename);
+      if (file.is_open())
+        cout << "Logger: File '" << filename << "' opened.\n";
+      else
+        cout << "Logger: Failed to open file!\n";
+    }
+
+    void write(const string& msg) {
+      if (file.is_open())
+        file << msg << endl;
+    }
+
+    ~Logger() {
+      if (file.is_open()) {
+        file.close();  // This is the key!
+        cout << "Logger: File closed in destructor.\n";
+      }
+    }
+  };
+
+  int main() {
+    {
+      Logger log("output.txt");
+      log.write("Hello from inside scope!");
+    } // Scope ends here - now ~Logger runs automatically
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Logger: File 'output.txt' opened.
+: Logger: File closed in destructor.
+
+The destructor's job varies by memory/object type:
+
+| Resource             | What happens if not cleaned up?    | Destructor's Job  |
+|----------------------+------------------------------------+-------------------|
+| Open file (~ofstream~) | File handle leak, data not flushed | ~file.close~        |
+| Dynamic memory (~new~) | Memory leak                        | ~delete[] ptr;~     |
+| Network socket       | Connection left open               | ~socket.close()~    |
+| Database connection  | Connection pool exhausted          | ~conn.disconnect()~ |
+
+
+* Summary
+
+- The destructor runs cleanup code (like closing files, connections).
+- The system frees the memory - automatically for stakc, manually for
+  heap (you can trigger =~Logger= via ~delete Logger~.
+
