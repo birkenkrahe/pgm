@@ -1,0 +1,169 @@
+#+TITLE: C vs. C++ Strings
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil:
+* From C-style strings to ~std::string~ (≈30 min)
+
+** Why this matters
+
+- Manual =new[] / delete[]= + =strcpy= is error-prone (memory leaks,
+  buffer overflows).
+
+- =std::string= does the heavy lifting automatically and is the
+  idiomatic C++ way.
+
+** Original C-style version (for reference)
+
+This code is available in GitHub: 
+- tinyurl.com/contact-info-h: =ContactInfo.h= 
+- tinyurl.com/contact-info-test-cpp: =ContactInfoTest.cpp=
+
+#+begin_src C++ :tangle ../src/ContactInfo.h :main no :results none
+  #ifndef CONTACTINFO_H
+  #define CONTACTINFO_H
+  #include <cstring>
+
+  class ContactInfo {
+  private:
+    char *name;
+    char *phone;
+  public:
+    ContactInfo(const char *n, const char *p) {
+      name  = new char[strlen(n)+1];
+      phone = new char[strlen(p)+1];
+      strcpy(name,  n);
+      strcpy(phone, p);
+    }
+    ~ContactInfo() { delete[] name; delete[] phone; }
+    const char *getName()        const { return name; }
+    const char *getPhoneNumber() const { return phone; }
+  };
+  #endif
+#+end_src
+
+** Test program
+
+#+begin_src C++ :flags -I ../src :results output :exports both :tangle ../src/ContactInfoTest.cpp
+  #include <iostream>
+  #include "ContactInfo.h"          // you will rename this later
+  using namespace std;
+
+  int main() {
+    ContactInfo entry("Kristen Lee", "555-2021");
+    cout << "Name: " << entry.getName() << "\n"
+         << "Phone Number: " << entry.getPhoneNumber() << "\n";
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Name: Kristen Lee
+: Phone Number: 555-2021
+
+** Task
+
+- Turn this C-style string program into a C++-style string program.
+- Create a new header and test file.
+- Remove all manual memory allocation and string manipulation.
+- Keep public interface: Constructor takes two string-like arguments.
+- Getter functions return a constant string reference (no copies).
+- No destructors needed.
+- Don't forget the header guards.
+
+** Bonus task
+
+Add a member function to =ContactInfo=:
+
+#+begin_src C++ :eval no
+  void setPhoneNumber(const std::string& newPhone);
+#+end_src
+
+* Solution 
+
+#+begin_src C++ :tangle ../src/ContactInfo2.h :main no :results none :exports none
+  #ifndef CONTACTINFO2_H
+  #define CONTACTINFO2_H
+  #include <string>
+
+  class ContactInfo {
+  private:
+    std::string name;
+    std::string phone;
+  public:
+    ContactInfo(const std::string& n, const std::string& p)
+      : name(n), phone(p) {}
+    const std::string& getName()        const { return name; }
+    const std::string& getPhoneNumber() const { return phone; }
+  };
+  #endif
+#+end_src
+
+#+begin_src C++ :flags -I ../src :results output :exports none
+  #include <iostream>
+  #include "ContactInfo2.h"
+  using namespace std;
+
+  int main() {
+    ContactInfo entry("Kristen Lee", "555-2021");
+    cout << "Name: " << entry.getName() << "\n"
+         << "Phone Number: " << entry.getPhoneNumber() << "\n";
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Name: Kristen Lee
+: Phone Number: 555-2021
+
+---
+
+* Follow-up: Mini-challenge (optional, 5 min)
+
+Add a member function to =ContactInfo=:
+
+#+begin_src C++ :eval no
+  void setPhoneNumber(const std::string& newPhone);
+#+end_src
+
+Implement it in the header (inline). Then modify =main()= to change the
+phone number and print again.
+
+*Answer (hidden)*:
+
+#+begin_src C++ :exports none
+  void setPhoneNumber(const std::string& newPhone) { phone = newPhone; }
+#+end_src
+
+#+begin_src C++ :flags -I ../src :results output :exports none
+  #include <iostream>
+  #include "ContactInfo2.h"
+  using namespace std;
+
+  int main() {
+    ContactInfo entry("Kristen Lee", "555-2021");
+    cout << "Original:\n";
+    cout << "Name: " << entry.getName() << "\n"
+         << "Phone: " << entry.getPhoneNumber() << "\n";
+    entry.setPhoneNumber("999-8888");
+    cout << "Updated:\n";
+    cout << "Name: " << entry.getName() << "\n"
+         << "Phone: " << entry.getPhoneNumber() << "\n";
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Original:
+: Name: Kristen Lee
+: Phone: 555-2021
+: Updated:
+: Name: Kristen Lee
+: Phone: 999-8888
+
+* Reflection (end of class)
+
+| Question                                  | Your Answer |
+|-------------------------------------------|-------------|
+| Lines of code: C-style vs. C++-style?     |             |
+| Memory safety guaranteed?                 |             |
+| Can you forget to free memory?            |             |
+| Ready for real-world code?                |             |
