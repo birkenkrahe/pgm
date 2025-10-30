@@ -3,7 +3,7 @@
 #+OPTIONS: toc:nil num:nil ^:nil:
 * From C-style strings to ~std::string~ (≈30 min)
 
-** Why this matters
+* Why this matters
 
 - Manual =new[] / delete[]= + =strcpy= is error-prone (memory leaks,
   buffer overflows).
@@ -11,7 +11,7 @@
 - =std::string= does the heavy lifting automatically and is the
   idiomatic C++ way.
 
-** Original C-style version (for reference)
+* Original C-style version (for reference)
 
 This code is available in GitHub: 
 - tinyurl.com/contact-info-h: =ContactInfo.h= 
@@ -40,7 +40,7 @@ This code is available in GitHub:
   #endif
 #+end_src
 
-** Test program
+* Test program
 
 #+begin_src C++ :flags -I ../src :results output :exports both :tangle ../src/ContactInfoTest.cpp
   #include <iostream>
@@ -59,7 +59,7 @@ This code is available in GitHub:
 : Name: Kristen Lee
 : Phone Number: 555-2021
 
-** Task
+* Task
 
 - Turn this C-style string program into a C++-style string program.
 - Create a new header and test file.
@@ -69,11 +69,94 @@ This code is available in GitHub:
 - No destructors needed.
 - Don't forget the header guards.
 
-** Bonus task
+* Bonus task
 
 Add a member function to =ContactInfo=:
 
 #+begin_src C++ :eval no
   void setPhoneNumber(const std::string& newPhone);
 #+end_src
+
+* Solution 
+
+#+begin_src C++ :tangle ../src/ContactInfo2.h :main no :results none :exports none
+  #ifndef CONTACTINFO2_H
+  #define CONTACTINFO2_H
+  #include <string>
+
+  class ContactInfo {
+  private:
+    std::string name;
+    std::string phone;
+  public:
+    ContactInfo(const std::string& n, const std::string& p)
+      : name(n), phone(p) {}
+    const std::string& getName()        const { return name; }
+    const std::string& getPhoneNumber() const { return phone; }
+  };
+  #endif
+#+end_src
+
+#+begin_src C++ :flags -I ../src :results output :exports none
+  #include <iostream>
+  #include "ContactInfo2.h"
+  using namespace std;
+
+  int main() {
+    ContactInfo entry("Kristen Lee", "555-2021");
+    cout << "Name: " << entry.getName() << "\n"
+         << "Phone Number: " << entry.getPhoneNumber() << "\n";
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Name: Kristen Lee
+: Phone Number: 555-2021
+
+---
+
+* Follow-up: Mini-challenge (optional, 5 min)
+
+Add a member function to =ContactInfo=:
+
+#+begin_src C++ :eval no
+  void setPhoneNumber(const std::string& newPhone);
+#+end_src
+
+Implement it in the header (inline). Then modify =main()= to change the
+phone number and print again.
+
+*Answer (hidden)*:
+
+#+begin_src C++ :exports none
+  void setPhoneNumber(const std::string& newPhone) { phone = newPhone; }
+#+end_src
+
+#+begin_src C++ :flags -I ../src :results output :exports none
+  #include <iostream>
+  #include "ContactInfo2.h"
+  using namespace std;
+
+  int main() {
+    ContactInfo entry("Kristen Lee", "555-2021");
+    cout << "Original:\n";
+    cout << "Name: " << entry.getName() << "\n"
+         << "Phone: " << entry.getPhoneNumber() << "\n";
+    entry.setPhoneNumber("999-8888");
+    cout << "Updated:\n";
+    cout << "Name: " << entry.getName() << "\n"
+         << "Phone: " << entry.getPhoneNumber() << "\n";
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Original:
+: Name: Kristen Lee
+: Phone: 555-2021
+: Updated:
+: Name: Kristen Lee
+: Phone: 999-8888
+
 
