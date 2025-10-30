@@ -77,6 +77,26 @@ Add a member function to =ContactInfo=:
   void setPhoneNumber(const std::string& newPhone);
 #+end_src
 
+* Destroying strings (Matthew's question in class)
+
+What if I do want to destroy the string memory?
+
+Three methods to do that:
+#+begin_src C++ :main yes :includes <iostream> :results output :exports both :comments both :tangle yes :noweb yes
+  std::string s = "In a galaxy far, far away...";
+  s.clear();   // removes content but capacity remains
+  s.shrink_to_fit();  // return unused memory
+
+  // resetting a dynamic string
+  std::string *ps = new std::string("dynamic string");
+  delete ps; // release both object and the buffer
+
+  // swap the string memory with the empty string
+  std::string s2 = "A very, very long, boring story...";
+  std::string empty;
+  s2.swap(empty); // frees all memory - swaps with empty string
+#+end_src
+
 * Solution 
 
 #+begin_src C++ :tangle ../src/ContactInfo2.h :main no :results none :exports none
