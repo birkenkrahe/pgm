@@ -3,7 +3,7 @@
 #+OPTIONS: toc:nil num:nil ^:nil:
 * From C-style strings to ~std::string~ (≈30 min)
 
-* Why this matters
+** Why this matters
 
 - Manual =new[] / delete[]= + =strcpy= is error-prone (memory leaks,
   buffer overflows).
@@ -11,7 +11,7 @@
 - =std::string= does the heavy lifting automatically and is the
   idiomatic C++ way.
 
-* Original C-style version (for reference)
+** Original C-style version (for reference)
 
 This code is available in GitHub: 
 - tinyurl.com/contact-info-h: =ContactInfo.h= 
@@ -40,7 +40,7 @@ This code is available in GitHub:
   #endif
 #+end_src
 
-* Test program
+** Test program
 
 #+begin_src C++ :flags -I ../src :results output :exports both :tangle ../src/ContactInfoTest.cpp
   #include <iostream>
@@ -59,8 +59,9 @@ This code is available in GitHub:
 : Name: Kristen Lee
 : Phone Number: 555-2021
 
-* Task
+** Task
 
+- Get the files with =wget -O= and compile them with =g++=.
 - Turn this C-style string program into a C++-style string program.
 - Create a new header and test file.
 - Remove all manual memory allocation and string manipulation.
@@ -69,7 +70,7 @@ This code is available in GitHub:
 - No destructors needed.
 - Don't forget the header guards.
 
-* Bonus task
+** Bonus task
 
 Add a member function to =ContactInfo=:
 
@@ -77,7 +78,7 @@ Add a member function to =ContactInfo=:
   void setPhoneNumber(const std::string& newPhone);
 #+end_src
 
-* Destroying strings (Matthew's question in class)
+** Destroying strings (Matthew's question)
 
 What if I do want to destroy the string memory?
 
@@ -134,8 +135,6 @@ Three methods to do that:
 : Name: Kristen Lee
 : Phone Number: 555-2021
 
----
-
 * Follow-up: Mini-challenge (optional, 5 min)
 
 Add a member function to =ContactInfo=:
@@ -147,7 +146,7 @@ Add a member function to =ContactInfo=:
 Implement it in the header (inline). Then modify =main()= to change the
 phone number and print again.
 
-*Answer (hidden)*:
+Answer:
 
 #+begin_src C++ :exports none
   void setPhoneNumber(const std::string& newPhone) { phone = newPhone; }
@@ -178,5 +177,69 @@ phone number and print again.
 : Updated:
 : Name: Kristen Lee
 : Phone: 999-8888
+
+* Post-mortem: What a destructor actually does
+
+The =Logger= class writes to =file=. The constructor opens a file. The
+=write= function writes its =msg= to the file. The destructor =~Logger= only
+closes the file.
+
+#+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+  #include <iostream>
+  #include <fstream>
+  using namespace std;
+
+  class Logger {
+    ofstream file;
+
+  public:
+    Logger(const string& filename) {
+      file.open(filename);
+      if (file.is_open())
+        cout << "Logger: File '" << filename << "' opened.\n";
+      else
+        cout << "Logger: Failed to open file!\n";
+    }
+
+    void write(const string& msg) {
+      if (file.is_open())
+        file << msg << endl;
+    }
+
+    ~Logger() {
+      if (file.is_open()) {
+        file.close();  // This is the key!
+        cout << "Logger: File closed in destructor.\n";
+      }
+    }
+  };
+
+  int main() {
+    {
+      Logger log("output.txt");
+      log.write("Hello from inside scope!");
+    } // Scope ends here - now ~Logger runs automatically
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Logger: File 'output.txt' opened.
+: Logger: File closed in destructor.
+
+The destructor's job varies by memory/object type:
+
+| Resource             | What happens if not cleaned up?    | Destructor's Job  |
+|----------------------+------------------------------------+-------------------|
+| Open file (~ofstream~) | File handle leak, data not flushed | ~file.close~        |
+| Dynamic memory (~new~) | Memory leak                        | ~delete[] ptr;~     |
+| Network socket       | Connection left open               | ~socket.close()~    |
+| Database connection  | Connection pool exhausted          | ~conn.disconnect()~ |
+
+* Summary (what I learnt)
+
+- The destructor runs cleanup code (like closing files, connections).
+- The system frees the memory - automatically for stack, manually for
+  heap (you can trigger =~Logger= via ~delete Logger~.
 
 
