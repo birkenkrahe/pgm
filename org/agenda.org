@@ -502,3 +502,7 @@ Every non-static member function in C++ has an implicit pointer named
 - Here, ~this~ is a pointer to the object =c=. When =add()= and
   =sub()= return ~*this~, they return the same object, allowing the
   chain =c.add(5).sub(3).add(2)=.
+
+* 8 - C-style vs. C++ strings
+* NEXT 9 - Using ~vector~ and ~iterator~ with search function
+* TODO 10 - Modifying containers while iterating
