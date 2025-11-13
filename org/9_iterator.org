@@ -103,3 +103,32 @@ Jazz Groove is in the collection!
 : Search Result:
 : Jazz Groove is in the collection!
 
+* Potential Learnings from Song Collection Manager
+
+The potential learnings are a summary of things to learn about ~vector~
+and ~iterator~ objects in C++:
+
+- Vector Operations
+  + Using =std::vector= for dynamic storage of strings
+  + Adding elements with =push_back()=
+  + Automatic memory allocation by vectors
+- Iterator Usage
+  + Employing =std::vector<std::string>::iterator= for traversal
+  + Using =begin()= and =end()= for range
+  + Dereferencing with =*it= and incrementing with =++it=
+  + Writing container-agnostic code
+- Looping with Iterators
+  + Using a =for= loop with iterators
+  + Maintaining a manual 1-based index
+  + Understanding iterator control flow vs. raw indexing
+- Search Logic
+  + Implementing linear search with a =while= loop and iterator
+  + Using a =bool= flag to track search results
+  + Breaking early when target ("Jazz Groove") is found
+- STL Best Practices
+  + Including necessary headers (=<iostream>=, =<vector>=, =<string>=)
+  + Using =std::= namespace explicitly for clarity
+- Debugging and Clarity
+  + Writing pseudocode as comments to plan logic
+  + Catching errors early through planning
+  + Aligning with course’s emphasis on pre-coding planning
