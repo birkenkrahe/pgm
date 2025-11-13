@@ -7,26 +7,23 @@ You’re tasked with managing a small song collection for a local music
 club. Use a vector to store song titles, display them using an
 iterator, and search for a specific song. This exercise introduces
 vector operations and iterator usage, preparing you for more complex
-tasks like the Playlist Manager exercise.
+tasks like the Playlist Manager exercise in CSC 240. No starter code
+or anything - breathe freely!.
 
 ** Instructions
-1. Start with the provided starter code below, which includes only
-   comments and the `main` function frame.
-2. Add the necessary headers (e.g., `<iostream>`, `<vector>`,
-   `<string>`).
-3. Create a `std::vector<std::string>` called `songs` and populate it
-   with at least 4 unique song titles (e.g., "Rock Anthem", "Jazz
-   Groove", "Pop Hit", "Blues Tune") using `push_back`.
-4. Use a `for` loop with an iterator
-   (`std::vector<std::string>::iterator`) to print each song title
-   with a 1-based index.
-5. Add a search function using an iterator to check if "Jazz Groove"
+1. Add the necessary header files.
+2. Create a string vector called =songs= and populate it with at least 4
+   unique song titles (e.g., "Rock Anthem", "Jazz Groove", "Pop Hit",
+   "Blues Tune").
+3. Use a ~for~ loop with an iterator to print each song title with a
+   1-based index.
+4. Add a search function using an iterator to check if "Jazz Groove"
    is in the list. If found, print "Jazz Groove is in the
    collection!"; otherwise, print "Jazz Groove not found!".
-6. This should take about 45 minutes, including reading the
+5. This should take about 45 minutes, including reading the
    instructions, reviewing iterator usage from "The STL Vector
    Class.pdf" in GitHub, coding, and testing. 
-7. Be prepared to discuss your solution in the next class.
+6. Be prepared to discuss your solution in the next class.
 
 ** Sample Output
 #+BEGIN_EXAMPLE
