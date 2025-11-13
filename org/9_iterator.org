@@ -1,0 +1,108 @@
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil: 
+* Song Collection Manager
+** Use Case
+
+You’re tasked with managing a small song collection for a local music
+club. Use a vector to store song titles, display them using an
+iterator, and search for a specific song. This exercise introduces
+vector operations and iterator usage, preparing you for more complex
+tasks like the Playlist Manager exercise.
+
+** Instructions
+1. Start with the provided starter code below, which includes only
+   comments and the `main` function frame.
+2. Add the necessary headers (e.g., `<iostream>`, `<vector>`,
+   `<string>`).
+3. Create a `std::vector<std::string>` called `songs` and populate it
+   with at least 4 unique song titles (e.g., "Rock Anthem", "Jazz
+   Groove", "Pop Hit", "Blues Tune") using `push_back`.
+4. Use a `for` loop with an iterator
+   (`std::vector<std::string>::iterator`) to print each song title
+   with a 1-based index.
+5. Add a search function using an iterator to check if "Jazz Groove"
+   is in the list. If found, print "Jazz Groove is in the
+   collection!"; otherwise, print "Jazz Groove not found!".
+6. This should take about 45 minutes, including reading the
+   instructions, reviewing iterator usage from "The STL Vector
+   Class.pdf" in GitHub, coding, and testing. 
+7. Be prepared to discuss your solution in the next class.
+
+** Sample Output
+#+BEGIN_EXAMPLE
+Song Collection:
+1: Rock Anthem
+2: Jazz Groove
+3: Pop Hit
+4: Blues Tune
+
+Search Result:
+Jazz Groove is in the collection!
+#+END_EXAMPLE
+
+** Solution Code (with Detailed Pseudocode Comments)
+#+BEGIN_SRC cpp :main no :includes :results output :exports both
+  // header files  
+  #include <iostream>
+  #include <vector>
+  #include <string>
+
+  int main() {
+    // create and populate vector with at least 4 song titles
+    std::vector<std::string> songs;
+    songs.push_back("Rock Anthem");      // Add first song to the vector
+    songs.push_back("Jazz Groove");      // Add second song to the vector
+    songs.push_back("Pop Hit");          // Add third song to the vector
+    songs.push_back("Blues Tune");       // Add fourth song to the vector
+
+    // use iterator to display song list with 1-based indices
+    std::cout << "Song Collection:\n";   // Print header for the song list
+    int index = 1;                       // Initialize counter for 1-based indexing
+    for (std::vector<std::string>::iterator it = songs.begin(); it != songs.end(); ++it) {
+      // Pseudocode: FOR each element in vector using iterator
+      //    Print the current index followed by ": " and the song name
+      //    Increment index for next position
+      std::cout << index << ": " << *it << std::endl;  // Dereference iterator to access each song
+      ++index;
+    }
+
+    // use iterator to search for "Jazz Groove" and print result
+    std::vector<std::string>::iterator searchIt = songs.begin();  // Set iterator to start of vector
+    bool found = false;                                          // Initialize flag to track if song is found
+    while (searchIt != songs.end()) {
+      // Pseudocode: WHILE iterator has not reached end of vector
+      //    IF current song equals "Jazz Groove"
+      //       Set found flag to true
+      //       Exit loop
+      //    Move iterator to next element
+      if (*searchIt == "Jazz Groove") {
+        found = true;    // Mark that the song was found
+        break;           // Exit the loop since we found the song
+      }
+      ++searchIt;          // Move to the next song in the vector
+    }
+    std::cout << "\nSearch Result:\n";  // Print header for search result
+    if (found) {
+      // Pseudocode: IF found flag is true
+      //    Print "Jazz Groove is in the collection!"
+      std::cout << "Jazz Groove is in the collection!\n";
+    } else {
+      // Pseudocode: ELSE
+      //    Print "Jazz Groove not found!"
+      std::cout << "Jazz Groove not found!\n";
+    }
+
+    return 0;
+  }
+#+END_SRC
+
+#+RESULTS:
+: Song Collection:
+: 1: Rock Anthem
+: 2: Jazz Groove
+: 3: Pop Hit
+: 4: Blues Tune
+: 
+: Search Result:
+: Jazz Groove is in the collection!
+
