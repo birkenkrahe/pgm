@@ -1,0 +1,57 @@
+#+TITLE: Modifying containers while iterating
+#+author: Marcus Birkenkrahe (pledged)
+#+subtitle: CSC 450 Programming Seminar Lyon College Fall 2025
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil: 
+* The Problem: Modifying containers while iterating
+
+- Here is a surprisingly hard problem: Removing even numbers from an
+  integer vector. It's easy just printing the non-even elements but
+  it's not easy to remove them if the number of even elements (and
+  hence the size of the resulting array) is not known beforehand. So
+  in C you have to manage memory yourself and pass through the array
+  twice.
+
+  Solution that just prints the non-even elements:
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
+    const int SIZE = 8;
+    int arr[SIZE] {1,2,2,4,5,6,101,22};
+    for(int i=0;i<SIZE;i++)
+      {
+        if(arr[i]%2==0)
+          continue;
+        else
+          cout << arr[i] << " ";
+      }
+  #+end_src
+
+  #+RESULTS:
+  : 1 5 101
+
+  Solution that computes the new logical size:
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
+    const int SIZE = 8;
+    int arr[SIZE] {1,2,2,4,5,6,101,22};
+    int j = 0; // logical size of the new array
+    for(int i=0; i<SIZE; i++)
+      {
+        if( arr[i]%2 != 0)
+          arr[j++] = arr[i];
+      }
+    for(int i=0; i<j; i++)
+      cout << arr[i] << " ";
+  #+end_src
+
+  #+RESULTS:
+  : 1 5 101
+
+- *Task*: Write a function that removes all even numbers from a ~vector<int>~
+  and returns the modified vector. Show that it works.
+
+- *Sample input/output:* first line is the input vector, second line the
+  output vector.
+  #+begin_example
+  1 2 2 4 5 6 101 22
+  1 5 101
+  #+end_example
+  
