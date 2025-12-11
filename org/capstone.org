@@ -1,0 +1,316 @@
+#+TITLE: Capstone Assignment: The Interstellar Archivist
+#+AUTHOR: CSC Programming Seminar
+#+OPTIONS: toc:nil num:nil
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Preamble
+
+How this problem was generated:
+- I fed all 10 problems (including my solutions) into Gemini 3.
+- I asked for a capstone problem dressed up like a Kattis problem that
+  drew on all the material generated and discussed in the term.
+- This is the result - an Easy Kattis problem (Gemini estimates it is
+  a 1.8 - no fancy algorithms, just straightforward concept to code).
+- Likely time to complete: 2-4 hours (with vs. without tips).
+- Submit OneCompiler.com URL or Org-mode file.
+
+* Problem: The Interstellar Archivist
+
+** Description
+
+You are the Head Archivist for the Galactic Library on Proxima
+Centauri b. Recently, a shipment of ancient Earth literature was
+digitized and beamed to your station. However, a massive solar flare
+hit the transmission relay, corrupting the data stream!
+
+You have received a list of book titles, but they are a mess. Your job
+is to write a C++ program to process the incoming data stream, clean
+up the corruption, filter out noise, and archive the valid books.
+
+The corruption manifests in three specific ways which you must handle:
+
+*** Temporal Inversion (Reversal)
+
+Due to time-dilation effects, some titles arrived backward.
+
+- *Rule:* If a raw entry *starts* with the caret character ~^~, the string
+  is reversed. You must remove the caret and reverse the rest of the
+  string back to its original order.
+
+- *Example:* ~^rettoP yrraH~ becomes ~Harry Potter~.
+
+*** Static Interference (Removal)
+
+The solar flare inserted random underscores (~_~) into the titles.
+
+- *Rule:* You must remove *all* occurrences of the underscore character ~_~
+  from the title.
+
+- *Example:* ~The_Great_Gatsby_~ becomes ~TheGreatGatsby~.
+
+*** Cosmic Noise (Filtering)
+
+Some entries are just random radiation signatures, not actual books. A
+valid book title has a specific "ASCII Signature."
+
+- *Rule:* Calculate the *Average Character* of the cleaned title (sum of
+  ASCII values divided by the length of the string).
+
+- *Condition:* If the Average Character is *NOT* a letter (it is outside
+  the range of 'a'-'z' AND 'A'-'Z'), the entry is considered "Noise"
+  and must be *deleted* from the archive.
+
+** Your Task
+Create a program that:
+1. Reads ~N~ raw entries.
+2. Stores them in a container (specifically a ~std::vector~).
+3. Uses a ~Book~ class to manage the data for each entry.
+4. Cleans and processes every entry according to the rules above.
+5. Removes any invalid "Noise" entries from the vector.
+6. Prints the final valid list and a "Checksum" (the total number of
+   characters in all valid titles combined).
+
+** Input
+- The first line contains a single integer $N$ ($1 \le N \le 100$),
+  the number of transmissions.
+
+- The next $N$ lines each contain a raw string (length 1 to 100
+  characters). The string may contain letters, numbers, symbols, and
+  underscores.
+
+** Output
+1. Print ~Recovered Archive:~ followed by the list of valid, cleaned
+   book titles, each on a new line.
+2. Print ~Checksum: X~, where X is the sum of the lengths of all valid
+   titles.
+
+** Sample Interaction
+- Sample Input 1
+  #+BEGIN_EXAMPLE
+  4
+  ^sngiseD_++C
+  The_Great_Gatsby_
+  ^secneicS_cimsoC_
+  #!##!123
+  #+END_EXAMPLE
+
+- Sample Output 1
+  #+BEGIN_EXAMPLE
+  Recovered Archive:
+  C++Designs
+  TheGreatGatsby
+  CosmicSciences
+  Checksum: 38
+  #+END_EXAMPLE
+
+- Explanation of Sample
+
+  - ~^sngiseD_++C~: Starts with ~^~. Remove ~^~ -> ~sngiseD_++C~. Reverse ->
+    ~C++_Designs~. Remove ~_~ -> ~C++Designs~. Average char is valid. Keep.
+
+   - ~The_Great_Gatsby_~: No ~^~. Remove ~_~ -> ~TheGreatGatsby~. Average char
+     is valid. Keep.
+     
+  - ~^secneicS_cimsoC_~: Starts with ~^~. Remove ~^~. Reverse ->
+    ~_Cosmic_Sciences~. Remove ~_~ -> ~CosmicSciences~. Keep.
+  
+  - ~#!##!123~: No ~^~. No ~_~. Average char is likely a symbol (not a
+    letter). Discard.
+
+* Implementation Requirements (Grading Rubric)
+
+To receive full credit, your solution must demonstrate the following
+techniques covered in the course:
+
+1. *Classes:* You must define a class (e.g., ~class Book~) that
+   encapsulates the title and handles the cleaning logic internally.
+
+2. *Vectors:* You must use ~std::vector~ to store the collection of books.
+
+3. *Standard Algorithms:*
+   - Use ~std::reverse~ (or valid iterator logic) for the inversion.
+   - Use the "Erase-Remove" idiom (e.g., ~vector.erase~ combined with
+     ~std::remove_if~) to filter out the invalid "Noise" entries.
+
+4. *Iterators:* Use iterators when printing the final list.
+
+5. *Clean Code:* No global variables; use ~std::string~ instead of
+   C-strings.
+
+* Hints for Students
+
+** Calculating Sums (No new libraries needed!)
+
+You might see online examples using ~#include <numeric>~ or
+~std::accumulate~. *You do not need this.* Simply use a standard loop to
+calculate:
+
+- The sum of ASCII values for the "Average Character".
+- The final Checksum (sum of title lengths).
+
+** Removing Underscores
+
+Remember the "Erase-Remove Idiom" from the *Modifying Containers*
+lecture?
+- ~std::remove~ doesn't actually shrink the string; it just shuffles
+  characters.
+- You need to call ~.erase()~ to actually chop them off.
+- Example:
+  #+begin_example cpp
+  myString.erase(std::remove(myString.begin(), myString.end(), '_'), myString.end());
+  #+end_example
+
+** Integer Division
+When calculating the "Average Character," remember that C++ integer
+division automatically floors the result.
+
+- If sum is 201 and length is 2, ~201 / 2~ is ~100~.
+
+- This is the desired behavior; do not cast to double.
+
+** Reading Input
+
+Since the problem states the book titles contain underscores instead
+of spaces, using ~cin >> myString~ inside your loop is safe and easier
+than ~getline~.
+
+** Reversing Order
+
+If the title starts with a ~^~, handle the caret removal *before*
+reversing. ~string.erase(0, 1)~ is useful here.
+
+* Reference solution
+
+#+BEGIN_SRC cpp :main no :includes :results output :exports both  :cmdline < input.txt
+  #include <iostream>
+  #include <string>
+  #include <vector>
+  #include <algorithm> // for reverse, remove, remove_if
+
+  // Class encapsulating the data
+  class Book {
+  private:
+    std::string title;
+    bool valid;
+
+    // Helper to check if a character is a letter
+    bool isLetter(char c) const {
+      return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+    }
+
+  public:
+    // Constructor
+    Book(std::string rawData) : title(rawData), valid(true) {}
+
+    // The core logic
+    void process() {
+      // 1. TEMPORAL INVERSION
+      // Checks the FRONT of the string for the caret
+      if (!title.empty() && title.front() == '^') {
+        title.erase(0, 1); // Remove the first character (caret)
+        std::reverse(title.begin(), title.end());
+      }
+
+      // 2. STATIC INTERFERENCE
+      // Using the erase-remove idiom on the string itself
+      title.erase(std::remove(title.begin(), title.end(), '_'), title.end());
+
+      // 3. COSMIC NOISE (Average Character)
+      if (title.empty()) {
+        valid = false;
+        return;
+      }
+
+      long long sum = 0;
+      for (char c : title) {
+        sum += static_cast<int>(c);
+      }
+
+      // Integer division floors automatically
+      char avgChar = static_cast<char>(sum / title.size());
+
+      if (!isLetter(avgChar)) {
+        valid = false;
+      }
+    }
+
+    bool isValid() const {
+      return valid;
+    }
+
+    std::string getTitle() const {
+      return title;
+    }
+
+    int getLength() const {
+      return title.length();
+    }
+  };
+
+  int main() {
+    // Fast I/O
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+
+    int N;
+    if (!(std::cin >> N)) return 0;
+
+    std::vector<Book> archive;
+
+    // Reading Input
+    for (int i = 0; i < N; ++i) {
+      std::string raw;
+      std::cin >> raw;
+
+      Book b(raw);
+      b.process();
+      archive.push_back(b);
+    }
+
+    // Filtering: Removing invalid entries
+    // Uses the lambda + erase_if pattern
+    auto newEnd = std::remove_if(archive.begin(), archive.end(),
+                               [](const Book& b) {
+                                 return !b.isValid();
+                               });
+    archive.erase(newEnd, archive.end());
+
+    // Output Results
+    std::cout << "Recovered Archive:\n";
+
+    // Using iterators for traversal
+    long long checksum = 0;
+    for (auto it = archive.begin(); it != archive.end(); ++it) {
+      std::cout << it->getTitle() << "\n";
+      checksum += it->getLength();
+    }
+
+    std::cout << "Checksum: " << checksum << std::endl;
+
+    return 0;
+  }
+#+END_SRC
+
+#+RESULTS:
+: Recovered Archive:
+: C++Designs
+: TheGreatGatsby
+: CosmicSciences
+: Checksum: 38
+
+- Input file =input.txt=
+  #+begin_src bash :results output :exports both
+  echo "4
+  ^sngiseD_++C
+  The_Great_Gatsby_
+  ^secneicS_cimsoC_
+  #!##!123" > input.txt
+  cat input.txt
+  #+end_src
+
+  #+RESULTS:
+  : 4
+  : ^sngiseD_++C
+  : The_Great_Gatsby_
+  : ^secneicS_cimsoC_
+  : #!##!123
+  
